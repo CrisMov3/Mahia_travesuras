@@ -155,7 +155,7 @@ footer { text-align: center; background: var(--pink-light); padding: 25px 0; fon
 /* =============================================== */
 /* --- ESTILOS RESPONSIVE PARA MÓVILES --- */
 /* =============================================== */
-@media (max-width: 768px) {
+@media (max-width: 1200px) {
     .container { padding: 30px 15px; }
     h2 { font-size: 2rem; }
 
@@ -189,4 +189,5 @@ footer { text-align: center; background: var(--pink-light); padding: 25px 0; fon
     .checkout-modal-content {
         margin: auto 15px; /* Centra y da espacio a los lados */
     }
+
 }
