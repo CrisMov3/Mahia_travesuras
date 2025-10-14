@@ -27,13 +27,54 @@
   const shippingOptions = document.querySelectorAll('input[name="shippingMethod"]');
   const hamburgerBtn = document.getElementById('hamburger-button');
   const navMenu = document.querySelector('.main-nav');
-  // NUEVO: Selector para el contador
   const cartCounterEl = document.getElementById('cart-counter');
 
   // ===============================
   // ESTADO DEL CARRITO
   // ===============================
   let cartItems = [];
+  
+  // ===============================
+  // LÓGICA DE NOTIFICACIÓN (TOAST)
+  // ===============================
+  function showCustomToast({ icon, title, subtitle, actionText, actionCallback }) {
+      const existingToast = document.querySelector('.custom-toast');
+      if (existingToast) existingToast.remove(); // Evita múltiples toasts
+
+      const toast = document.createElement('div');
+      toast.className = 'custom-toast';
+      
+      const actionButtonHTML = actionText ? `<button class="toast-action-btn">${actionText}</button>` : '';
+
+      toast.innerHTML = `
+          <span class="toast-icon">${icon}</span>
+          <div class="toast-body">
+              <div class="toast-title">${title}</div>
+              <span class="toast-subtitle">${subtitle}</span>
+          </div>
+          ${actionButtonHTML}
+          <button class="toast-close-btn">×</button>
+      `;
+
+      document.body.appendChild(toast);
+      setTimeout(() => toast.classList.add('show'), 10);
+
+      const removeToast = () => {
+          toast.classList.remove('show');
+          toast.addEventListener('transitionend', () => toast.remove());
+      };
+
+      toast.querySelector('.toast-close-btn').onclick = removeToast;
+      if (actionText && actionCallback) {
+          toast.querySelector('.toast-action-btn').onclick = () => {
+              actionCallback();
+              removeToast();
+          };
+      }
+
+      setTimeout(removeToast, 5000);
+  }
+
 
   // ===============================
   // LÓGICA DEL MENÚ HAMBURGUESA
@@ -46,12 +87,9 @@
   // ===============================
   // LÓGICA DEL CARRITO
   // ===============================
-  // NUEVA FUNCIÓN: Actualizar el contador del ícono del carrito
   function updateCartCounter() {
     if (!cartCounterEl) return;
-    
     const totalItems = cartItems.reduce((sum, item) => sum + item.qty, 0);
-
     if (totalItems > 0) {
         cartCounterEl.textContent = totalItems;
         cartCounterEl.classList.add('show');
@@ -121,13 +159,19 @@
     
     updateTotalsUI();
     addCartItemListeners();
-    updateCartCounter(); // Actualiza el contador cada vez que el carrito cambia
+    updateCartCounter();
   }
 
-  function clearCart(confirm = true) {
-    if (confirm && !window.confirm('¿Estás segura de que quieres vaciar el carrito?')) return;
-    cartItems = [];
-    renderCart();
+  function clearCart() {
+      if (cartItems.length === 0) return; // No hacer nada si ya está vacío
+
+      cartItems = [];
+      renderCart();
+      showCustomToast({
+          icon: '✅',
+          title: 'Carrito vaciado',
+          subtitle: 'Todos los productos han sido eliminados.'
+      });
   }
 
   // ===============================
@@ -154,7 +198,18 @@
 
   function handleCheckout() {
     if (cartItems.length === 0) {
-        alert('Tu carrito está vacío. ¡Añade algunos productos para continuar!');
+        showCustomToast({
+            icon: '💗',
+            title: 'Tu carrito está vacío',
+            subtitle: 'Añade tus artículos favoritos y vuelve cuando estés lista.',
+            actionText: 'Ver productos',
+            actionCallback: () => {
+                const productsSection = document.getElementById('productos');
+                if (productsSection) {
+                    productsSection.scrollIntoView({ behavior: 'smooth' });
+                }
+            }
+        });
         return;
     }
     const method = getSelectedShippingMethod();
@@ -211,7 +266,7 @@
   if (hamburgerBtn) hamburgerBtn.addEventListener('click', toggleNavMenu);
   if (cartIcon) cartIcon.addEventListener('click', toggleCart);
   if (cartCloseBtn) cartCloseBtn.addEventListener('click', toggleCart);
-  if (clearBtn) clearBtn.addEventListener('click', () => clearCart(true));
+  if (clearBtn) clearBtn.addEventListener('click', clearCart); // Ya no necesita confirmación aquí
   if (checkoutBtn) checkoutBtn.addEventListener('click', handleCheckout);
   
   productButtons.forEach(button => {
@@ -220,8 +275,6 @@
         const name = productCard.querySelector('h3').innerText;
         const price = parsePrice(productCard.querySelector('p.price').innerText);
         addItemToCart({ name, price });
-        // ELIMINADO: Ya no se abre el carrito al añadir un producto
-        // cartPanel.classList.add('open');
     });
   });
 
