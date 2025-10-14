@@ -11,7 +11,7 @@
 }
 
 body {
-    font-family: 'Montserrat', sans-serif;
+    font-family: "Poppins", sans-serif; /* FUENTE ACTUALIZADA */
     margin: 0;
     color: var(--text-color);
     background-color: var(--white-color);
@@ -24,14 +24,19 @@ body {
 }
 
 h1, h2, h3, h4 {
-    font-family: 'Playfair Display', serif;
+    font-family: "Poppins", sans-serif; /* FUENTE ACTUALIZADA */
     color: var(--primary-color);
     text-align: center;
+    font-weight: 700; /* AJUSTE DE GROSOR */
 }
 
 h2 {
     font-size: 2.5rem;
     margin-bottom: 20px;
+}
+
+h1 {
+    font-weight: 600; /* Ajuste específico para el título principal */
 }
 
 /* --- ENCABEZADO Y NAVEGACIÓN --- */
@@ -108,7 +113,7 @@ header {
     justify-content: center;
     font-size: 0.75rem;
     font-weight: bold;
-    font-family: 'Montserrat', sans-serif;
+    font-family: "Poppins", sans-serif; /* FUENTE ACTUALIZADA */
     transform: scale(0);
     transition: transform 0.2s ease-out;
 }
@@ -516,19 +521,21 @@ header {
     top: 0;
     width: 100%;
     height: 100%;
-    overflow: auto;
     background-color: rgba(0,0,0,0.5);
+    display: none;
+    align-items: center;
+    justify-content: center;
 }
 
 .checkout-modal-content {
     background-color: #fefefe;
-    margin: 15% auto;
     padding: 25px;
-    border: 1px solid #888;
+    border: none;
     width: 90%;
     max-width: 500px;
     border-radius: 10px;
     position: relative;
+    margin: 0;
 }
 
 #modal-close {
@@ -610,10 +617,11 @@ footer {
     display: flex;
     align-items: center;
     gap: 12px;
-    font-family: 'Montserrat', sans-serif;
+    font-family: "Poppins", sans-serif; /* FUENTE ACTUALIZADA */
     min-width: 280px;
     max-width: 90%;
     z-index: 9999;
+    flex-wrap: wrap;
 }
 
 .custom-toast.show {
@@ -642,9 +650,26 @@ footer {
     font-size: 13px;
 }
 
-.toast-action-btn {
-    background: var(--pink-strong);
-    color: white;
+.toast-close-btn {
+    background: transparent;
+    border: none;
+    color: #999;
+    font-size: 20px;
+    cursor: pointer;
+    padding: 0 5px;
+    position: absolute;
+    top: 10px;
+    right: 10px;
+}
+
+.toast-buttons {
+    display: flex;
+    gap: 10px;
+    margin-left: auto;
+}
+
+.toast-action-btn,
+.toast-cancel-btn {
     border: none;
     padding: 10px 16px;
     border-radius: 8px;
@@ -653,13 +678,15 @@ footer {
     white-space: nowrap;
 }
 
-.toast-close-btn {
-    background: transparent;
-    border: none;
-    color: #999;
-    font-size: 20px;
-    cursor: pointer;
-    padding: 0 5px;
+.toast-action-btn {
+    background: var(--pink-strong);
+    color: white;
+}
+
+.toast-cancel-btn {
+    background-color: #f0f0f0;
+    color: #333;
+    border: 1px solid #ddd;
 }
 
 /* =============================================== */
@@ -802,10 +829,21 @@ footer {
         margin: auto 15px;
     }
 
-    /* NUEVO: Ajustes responsive para el Toast */
     .custom-toast {
         width: 90%;
         min-width: 0;
         box-sizing: border-box;
+    }
+
+    .toast-buttons {
+        width: 100%;
+        margin-left: 0;
+        margin-top: 10px;
+        justify-content: flex-end;
+    }
+
+    .toast-close-btn {
+        top: 5px;
+        right: 5px;
     }
 }
