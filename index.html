@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mahia Travesuras</title>
+    <link rel="stylesheet" href="styles/inicio.css"> 
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+</head>
+<body>
+
+    <div class="top-bar"></div>
+
+    <header>
+        <div class="logo">
+            <img src="img/Logos/LOGOISO.png" alt="Logo Mahia Travesuras">
+            <span class="logo-text">Mahia Travesuras</span>
+        </div>
+        
+        <nav class="main-nav">
+            <ul>
+                <li><a href="#">Inicio</a></li>
+                <li><a href="#nosotros">Nosotros</a></li>
+                <li><a href="#testimonios">Testimonios</a></li>
+                <li><a href="#productos">Productos</a></li>
+                <li><a href="#">Catálogo</a></li>
+            </ul>
+        </nav>
+        
+        <div class="header-icons">
+            <div class="cart-icon">
+                 <i class="fa-solid fa-cart-shopping"></i>
+                 <span id="cart-counter"></span>
+            </div>
+            <button class="hamburger" id="hamburger-button" aria-label="Abrir menú">
+                <span class="hamburger-line"></span>
+                <span class="hamburger-line"></span>
+                <span class="hamburger-line"></span>
+            </button>
+        </div>
+    </header>
+
+    <main>
+        <section class="hero">
+            <div class="hero-content">
+                <p class="nuevo-envio">Nuevo • Envío gratis desde $170.000</p>
+                <h1>Moda para pequeñas princesas modernas</h1>
+                <p>Ropa delicada, cómoda y con estilo para las niñas que brillan con su propia luz. Diseños exclusivos, telas suaves y detalles pensados para el día a día y las ocasiones especiales.</p>
+                <ul class="hero-features">
+                    <li><i class="fa-solid fa-seedling"></i> Materiales suaves e hipoalergénicos</li>
+                    <li><i class="fa-solid fa-hand-holding-heart"></i> Producción responsable y detalles hechos a mano</li>
+                    <li><i class="fa-solid fa-truck"></i> Envíos rápidos y opciones de devolución</li>
+                </ul>
+                <a href="#" class="btn-lookbook">Ver lookbook</a>
+                <form class="subscription-form" onsubmit="event.preventDefault(); subscribeEmail();">
+                    <input id="hero-email" type="email" placeholder="Ingresa tu correo y recibe 10% de descuento" required>
+                    <button type="submit">Suscribirse</button>
+                </form>
+                <div class="trust-badges">
+                    <span><i class="fa-solid fa-shield-halved"></i> Pago seguro</span>
+                    <span><i class="fa-solid fa-award"></i> Calidad garantizada</span>
+                </div>
+            </div>
+            <div class="hero-image">
+                 <img src="img/inicio/vestido_rosa.jpeg" alt="Niña con vestido rosa">
+            </div>
+        </section>
+
+        <section class="about container" id="nosotros">
+            <h2>Sobre Mahia Travesuras</h2>
+            <p>Creemos que cada niña merece sentirse única. Diseñamos prendas con amor, utilizando telas suaves y colores pastel que reflejan dulzura y modernidad. Nuestro propósito es vestir sueños.</p>
+        </section>
+
+        <section class="featured-products container" id="productos">
+            <h2>Productos destacados ✨</h2>
+            <div class="product-grid">
+                <div class="producto">
+                    <img src="img/inicio/vestido_rosa_ecantado.jpeg" alt="Vestido rosa encantado">
+                    <h3>Vestido rosa encantado</h3>
+                    <p class="price">$59.900</p>
+                    <button class="btn-add-to-cart">Agregar al carrito</button>
+                </div>
+                <div class="producto">
+                    <img src="img/inicio/v.jpeg" alt="Conjunto floral verano">
+                    <h3>Conjunto floral verano</h3>
+                    <p class="price">$49.900</p>
+                    <button class="btn-add-to-cart">Agregar al carrito</button>
+                </div>
+                <div class="producto">
+                    <img src="img/inicio/chaqueta suave.jpeg" alt="Chaqueta suave lila">
+                    <h3>Chaqueta suave lila</h3>
+                    <p class="price">$69.900</p>
+                    <button class="btn-add-to-cart">Agregar al carrito</button>
+                </div>
+            </div>
+        </section>
+
+        <section class="testimonials" id="testimonios">
+            <div class="container">
+                <h2>Lo que dicen nuestras clientas ❤️</h2>
+                <div class="testimonial-grid">
+                    <div class="testimonial-card">
+                        <p>"La ropa es hermosa y de excelente calidad. Mi hija no quiere ponerse otra cosa."</p>
+                        <span class="author">— Carolina R.</span>
+                    </div>
+                    <div class="testimonial-card">
+                        <p>"Detalles encantadores, colores suaves y una atención increíble. ¡Recomendadísimo!"</p>
+                        <span class="author">— Laura G.</span>
+                    </div>
+                    <div class="testimonial-card">
+                        <p>"Perfecto para regalar. Quedé encantada con la presentación y la tela."</p>
+                        <span class="author">— Andrea M.</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <section class="instagram container" id="instagram">
+            <h2>Síguenos en Instagram</h2>
+            <p>Las últimas publicaciones de @mahia_travesurasof</p>
+            <div class="instagram-grid" id="instagram-grid">
+                <p>Cargando feed de Instagram...</p>
+            </div>
+        </section>
+
+        <section class="contact container" id="contacto">
+            <div class="contact-info">
+                <h2>Contáctanos</h2>
+                <p>¿Tienes alguna pregunta o quieres hacer un pedido especial? ¡Nos encantaría saber de ti!</p>
+                <ul class="contact-details">
+                    <li><i class="fa-solid fa-phone"></i> +57 317 2980319</li>
+                    <li><i class="fa-solid fa-envelope"></i> hola@mahiatravesuras.com</li>
+                    <li><i class="fa-solid fa-map-marker-alt"></i> Centro comercial Miami, 2 piso local 207</li>
+                </ul>
+                <div class="social-icons">
+                     <a href="https://www.instagram.com/mahia_travesurasof/" target="_blank"><i class="fab fa-instagram"></i></a>
+                     <a href="#"><i class="fab fa-facebook"></i></a>
+                     <a href="https://whatsapp.com/channel/0029VbAsKZb84OmGZhYd8K39" target="_blank"><i class="fab fa-whatsapp"></i></a>
+                </div>
+            </div>
+            <div class="contact-form">
+                <form>
+                    <div class="form-group">
+                        <label for="nombre">Nombre</label>
+                        <input type="text" id="nombre" placeholder="Tu nombre completo">
+                    </div>
+                     <div class="form-group">
+                        <label for="email">Correo Electrónico</label>
+                        <input type="email" id="email" placeholder="tu.correo@ejemplo.com">
+                    </div>
+                     <div class="form-group">
+                        <label for="mensaje">Mensaje</label>
+                        <textarea id="mensaje" placeholder="Escribe tu consulta aquí..."></textarea>
+                    </div>
+                    <button type="submit" class="btn-submit">Enviar Mensaje</button>
+                </form>
+            </div>
+        </section>
+    </main>
+    
+    <div class="cart" id="cart">
+        <button id="cart-close" aria-label="Cerrar carrito" title="Cerrar carrito" class="cart-close">×</button>
+        <h3>Tu carrito 🛍️</h3>
+        <div class="cart-items" aria-live="polite"></div>
+        <div class="cart-summary">
+            <div class="cart-row subtotal">Subtotal: <span id="cart-subtotal">$0</span></div>
+            <fieldset class="shipping-options">
+                <legend>Método de entrega</legend>
+                <label><input type="radio" name="shippingMethod" value="delivery" checked> Domicilio</label>
+                <label><input type="radio" name="shippingMethod" value="pickup"> Recoger</label>
+            </fieldset>
+            <div class="cart-row shipping-fee">Costo envío: <span id="cart-shipping">$0</span></div>
+            <div class="cart-row total">Total: <strong id="cart-total">$0</strong></div>
+            <div class="cart-actions">
+                <button id="checkout-whatsapp" class="primary">Pagar por WhatsApp</button>
+                <button id="clear-cart" type="button">Vaciar carrito</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="checkout-modal" id="checkout-modal" role="dialog" aria-modal="true" aria-hidden="true">
+        <div class="checkout-modal-content" role="document">
+            <button id="modal-close" aria-label="Cerrar formulario" title="Cerrar">×</button>
+            <h4>Detalles de envío</h4>
+            <form id="delivery-form">
+                <label for="delivery-address">Domicilio</label>
+                <input id="delivery-address" name="address" type="text" placeholder="Dirección completa" required>
+                <label for="contact-name">Nombre completo</label>
+                <input id="contact-name" name="name" type="text" placeholder="Nombre completo" required>
+                <label for="contact-phone">Número de celular</label>
+                <input id="contact-phone" name="phone" type="tel" placeholder="+57 300 0000000" required>
+                <div class="modal-buttons">
+                    <button type="button" id="modal-cancel">Cancelar</button>
+                    <button type="submit" class="primary">Confirmar y pagar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <footer>
+        <div class="footer-social-icons">
+            <a href="https://www.instagram.com/mahia_travesurasof/" title="Instagram"><i class="fab fa-instagram"></i></a>
+            <a href="#" title="Facebook"><i class="fab fa-facebook"></i></a>
+            <a href="#" title="TikTok"><i class="fab fa-tiktok"></i></a>
+        </div>
+        <p>© 2025 Mahia Travesuras | Princesa Moderna</p>
+        <p>Desarrollado por:
+            <a href="https://www.strokbig.com" target="_blank" rel="noopener noreferrer">
+                <br>
+                <img src="img/Logos/Strokbig-Logo-II-[SF].png" alt="Logotipo de Strokbig" width="100">
+            </a>
+        </p>
+    </footer>
+
+    <script src="scripts/inicio.js"></script> 
+</body>
+</html>
