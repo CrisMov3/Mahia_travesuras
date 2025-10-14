@@ -37,14 +37,17 @@
   // ===============================
   // LÓGICA DE NOTIFICACIÓN (TOAST)
   // ===============================
-  function showCustomToast({ icon, title, subtitle, actionText, actionCallback }) {
+  function showCustomToast({ icon, title, subtitle, actionText, actionCallback, cancelText }) {
       const existingToast = document.querySelector('.custom-toast');
-      if (existingToast) existingToast.remove(); // Evita múltiples toasts
+      if (existingToast) existingToast.remove();
 
       const toast = document.createElement('div');
       toast.className = 'custom-toast';
       
       const actionButtonHTML = actionText ? `<button class="toast-action-btn">${actionText}</button>` : '';
+      const cancelButtonHTML = cancelText ? `<button class="toast-cancel-btn">${cancelText}</button>` : '';
+      const buttonsContainerHTML = (actionText || cancelText) ? `<div class="toast-buttons">${cancelButtonHTML}${actionButtonHTML}</div>` : '';
+
 
       toast.innerHTML = `
           <span class="toast-icon">${icon}</span>
@@ -52,7 +55,7 @@
               <div class="toast-title">${title}</div>
               <span class="toast-subtitle">${subtitle}</span>
           </div>
-          ${actionButtonHTML}
+          ${buttonsContainerHTML}
           <button class="toast-close-btn">×</button>
       `;
 
@@ -65,14 +68,20 @@
       };
 
       toast.querySelector('.toast-close-btn').onclick = removeToast;
+      
       if (actionText && actionCallback) {
           toast.querySelector('.toast-action-btn').onclick = () => {
               actionCallback();
               removeToast();
           };
       }
+      if (cancelText) {
+          toast.querySelector('.toast-cancel-btn').onclick = removeToast;
+      }
 
-      setTimeout(removeToast, 5000);
+      if (!actionText && !cancelText) {
+        setTimeout(removeToast, 5000);
+      }
   }
 
 
@@ -163,8 +172,7 @@
   }
 
   function clearCart() {
-      if (cartItems.length === 0) return; // No hacer nada si ya está vacío
-
+      if (cartItems.length === 0) return;
       cartItems = [];
       renderCart();
       showCustomToast({
@@ -193,7 +201,9 @@
   }
 
   function toggleCart() { cartPanel.classList.toggle('open'); }
-  function openModal() { if (modal) modal.style.display = 'block'; }
+  
+  // CORREGIDO: Usar flex para centrar el modal
+  function openModal() { if (modal) modal.style.display = 'flex'; }
   function closeModal() { if (modal) modal.style.display = 'none'; }
 
   function handleCheckout() {
@@ -205,19 +215,28 @@
             actionText: 'Ver productos',
             actionCallback: () => {
                 const productsSection = document.getElementById('productos');
-                if (productsSection) {
-                    productsSection.scrollIntoView({ behavior: 'smooth' });
-                }
+                if (productsSection) productsSection.scrollIntoView({ behavior: 'smooth' });
             }
         });
         return;
     }
+
     const method = getSelectedShippingMethod();
+
     if (method === 'delivery') {
         openModal();
     } else {
-        const message = buildWhatsAppMessage();
-        window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`, '_blank');
+        showCustomToast({
+            icon: '🏢',
+            title: 'Confirmar Recogida en Tienda',
+            subtitle: "Recuerda recogerlo en nuestra tienda física, ubicada en el centro comercial Miami, 2 piso local 207.",
+            actionText: 'Aceptar',
+            cancelText: 'Cancelar',
+            actionCallback: () => {
+                const message = buildWhatsAppMessage();
+                window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`, '_blank');
+            }
+        });
     }
   }
   
@@ -266,7 +285,7 @@
   if (hamburgerBtn) hamburgerBtn.addEventListener('click', toggleNavMenu);
   if (cartIcon) cartIcon.addEventListener('click', toggleCart);
   if (cartCloseBtn) cartCloseBtn.addEventListener('click', toggleCart);
-  if (clearBtn) clearBtn.addEventListener('click', clearCart); // Ya no necesita confirmación aquí
+  if (clearBtn) clearBtn.addEventListener('click', clearCart);
   if (checkoutBtn) checkoutBtn.addEventListener('click', handleCheckout);
   
   productButtons.forEach(button => {
