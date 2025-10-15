@@ -385,7 +385,6 @@
     if (clearBtn) clearBtn.addEventListener('click', clearCart);
     if (checkoutBtn) checkoutBtn.addEventListener('click', handleCheckout);
     
-    // CORRECCIÓN #2: Usar delegación de eventos para los botones de añadir al carrito
     document.body.addEventListener('click', (event) => {
         if (event.target.classList.contains('btn-add-to-cart')) {
             const productCard = event.target.closest('.producto');
@@ -402,7 +401,6 @@
         }
     });
 
-    // CORRECCIÓN #1: Usar delegación de eventos para los botones de envío
     if (cartSummaryEl) {
         cartSummaryEl.addEventListener('change', (event) => {
             if (event.target.name === 'shippingMethod') {
@@ -418,6 +416,46 @@
         const modal = document.getElementById('checkout-modal');
         if (e.target === modal) closeModal(); 
     });
+
+    // --- NUEVO: LÓGICA PARA BLOQUEAR CLIC DERECHO Y ATAJOS ---
+    
+    // Bloquear el menú contextual del clic derecho
+    document.addEventListener('contextmenu', (event) => {
+        event.preventDefault();
+    });
+
+    // Bloquear atajos de teclado para herramientas de desarrollador
+    document.addEventListener('keydown', (event) => {
+        // Bloquear F12
+        if (event.key === 'F12') {
+            event.preventDefault();
+        }
+        // Bloquear Ctrl+Shift+I (Windows/Linux)
+        if (event.ctrlKey && event.shiftKey && event.key.toLowerCase() === 'i') {
+            event.preventDefault();
+        }
+        // Bloquear Cmd+Option+I (Mac)
+        if (event.metaKey && event.altKey && event.key.toLowerCase() === 'i') {
+            event.preventDefault();
+        }
+        // Bloquear Ctrl+Shift+J (Windows/Linux)
+        if (event.ctrlKey && event.shiftKey && event.key.toLowerCase() === 'j') {
+            event.preventDefault();
+        }
+        // Bloquear Cmd+Option+J (Mac)
+        if (event.metaKey && event.altKey && event.key.toLowerCase() === 'j') {
+            event.preventDefault();
+        }
+        // Bloquear Ctrl+U (Ver código fuente)
+        if (event.ctrlKey && event.key.toLowerCase() === 'u') {
+            event.preventDefault();
+        }
+        // Bloquear Cmd+U (Ver código fuente en Mac)
+        if (event.metaKey && event.key.toLowerCase() === 'u') {
+            event.preventDefault();
+        }
+    });
+
   });
 
 })();
