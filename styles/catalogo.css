@@ -250,7 +250,7 @@ header {
 /* --- FOOTER --- */
 footer { text-align: center; background: var(--pink-light); padding: 25px 0; font-size: 0.9rem; }
 .footer-social-icons { margin-bottom: 10px; }
-.footer-social-icons a { color: #000000; margin: 0 10px; font-size: 1.2rem; }
+.footer-social-icons a { color: var(--primary-color); margin: 0 10px; font-size: 1.2rem; }
 
 /* --- ESTILOS PARA LA NOTIFICACIÓN "TOAST" --- */
 .custom-toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%) translateY(120%); opacity: 0; transition: transform 0.3s ease-out, opacity 0.3s ease-out; background: linear-gradient(135deg, #fffafa, #fff0f5); color: #555; padding: 14px 18px; border-radius: 16px; box-shadow: 0 10px 30px rgba(0,0,0,0.12); display: flex; align-items: center; gap: 12px; font-family: "Poppins", sans-serif; min-width: 280px; max-width: 90%; z-index: 9999; flex-wrap: wrap; }
@@ -298,3 +298,4 @@ footer { text-align: center; background: var(--pink-light); padding: 25px 0; fon
     .toast-buttons { width: 100%; margin-left: 0; margin-top: 10px; justify-content: flex-end; }
     .toast-close-btn { top: 5px; right: 5px; }
 }
+
