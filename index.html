@@ -55,7 +55,7 @@
                     <li><i class="fa-solid fa-hand-holding-heart"></i> Producción responsable y detalles hechos a mano</li>
                     <li><i class="fa-solid fa-truck"></i> Envíos rápidos y opciones de devolución</li>
                 </ul>
-                <a href="#" class="btn-lookbook">Ver lookbook</a>
+                <a href="catalogo.html" class="btn-lookbook">Ver lookbook</a>
                 <form class="subscription-form" onsubmit="event.preventDefault(); subscribeEmail();">
                     <input id="hero-email" type="email" placeholder="Ingresa tu correo y recibe 10% de descuento" required>
                     <button type="submit">Suscribirse</button>
@@ -167,6 +167,9 @@
         <h3>Tu carrito 🛍️</h3>
         <div class="cart-items" aria-live="polite"></div>
         <div class="cart-summary">
+            <div class="wholesale-notice" id="wholesale-notice">
+                <i class="fa-solid fa-box-open"></i> Estás haciendo una compra al por mayor
+            </div>
             <div class="cart-row subtotal">Subtotal: <span id="cart-subtotal">$0</span></div>
             <fieldset class="shipping-options">
                 <legend>Método de entrega</legend>
@@ -219,5 +222,3 @@
     <script src="scripts/inicio.js"></script> 
 </body>
 </html>
-
-
