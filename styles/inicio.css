@@ -242,7 +242,7 @@ header {
 }
 .contact-info .social-icons a {
     margin-right: 15px;
-    color: var(--primary-color);
+    color: #000000;
     font-size: 1.5rem;
     text-decoration: none;
 }
@@ -488,7 +488,7 @@ footer {
 }
 .footer-social-icons { margin-bottom: 10px; }
 .footer-social-icons a {
-    color: var(--primary-color);
+    color: #000000;
     margin: 0 10px;
     font-size: 1.2rem;
 }
@@ -678,4 +678,5 @@ footer {
     }
     .toast-close-btn { top: 5px; right: 5px; }
 }
+
 
