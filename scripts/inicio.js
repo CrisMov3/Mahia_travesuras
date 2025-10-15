@@ -225,6 +225,26 @@
   }
 
   // ===============================
+  // NUEVO: LÓGICA PARA EL ACORDEÓN DE FAQ
+  // ===============================
+  function setupFAQAccordion() {
+      const faqItems = document.querySelectorAll('.faq-item');
+      if (faqItems.length === 0) return;
+
+      faqItems.forEach(item => {
+          const question = item.querySelector('.faq-question');
+          question.addEventListener('click', () => {
+              faqItems.forEach(otherItem => {
+                  if (otherItem !== item) {
+                      otherItem.classList.remove('active');
+                  }
+              });
+              item.classList.toggle('active');
+          });
+      });
+  }
+
+  // ===============================
   // GESTIÓN DE EVENTOS
   // ===============================
   function addCartItemListeners() {
@@ -365,7 +385,6 @@
   // INICIALIZACIÓN Y EVENTOS PRINCIPALES
   // ===============================
   document.addEventListener('DOMContentLoaded', () => {
-    // Selectores que deben estar dentro de DOMContentLoaded
     const cartIcon = document.querySelector('.cart-icon');
     const cartCloseBtn = document.getElementById('cart-close');
     const clearBtn = document.getElementById('clear-cart');
@@ -378,6 +397,7 @@
     
     renderCart();
     setupProductFiltering();
+    setupFAQAccordion(); // LLAMADA A LA NUEVA FUNCIÓN
 
     if (hamburgerBtn) hamburgerBtn.addEventListener('click', toggleNavMenu);
     if (cartIcon) cartIcon.addEventListener('click', toggleCart);
@@ -417,41 +437,14 @@
         if (e.target === modal) closeModal(); 
     });
 
-    // --- NUEVO: LÓGICA PARA BLOQUEAR CLIC DERECHO Y ATAJOS ---
+    // --- LÓGICA PARA BLOQUEAR CLIC DERECHO Y ATAJOS ---
     
-    // Bloquear el menú contextual del clic derecho
     document.addEventListener('contextmenu', (event) => {
         event.preventDefault();
     });
 
-    // Bloquear atajos de teclado para herramientas de desarrollador
     document.addEventListener('keydown', (event) => {
-        // Bloquear F12
-        if (event.key === 'F12') {
-            event.preventDefault();
-        }
-        // Bloquear Ctrl+Shift+I (Windows/Linux)
-        if (event.ctrlKey && event.shiftKey && event.key.toLowerCase() === 'i') {
-            event.preventDefault();
-        }
-        // Bloquear Cmd+Option+I (Mac)
-        if (event.metaKey && event.altKey && event.key.toLowerCase() === 'i') {
-            event.preventDefault();
-        }
-        // Bloquear Ctrl+Shift+J (Windows/Linux)
-        if (event.ctrlKey && event.shiftKey && event.key.toLowerCase() === 'j') {
-            event.preventDefault();
-        }
-        // Bloquear Cmd+Option+J (Mac)
-        if (event.metaKey && event.altKey && event.key.toLowerCase() === 'j') {
-            event.preventDefault();
-        }
-        // Bloquear Ctrl+U (Ver código fuente)
-        if (event.ctrlKey && event.key.toLowerCase() === 'u') {
-            event.preventDefault();
-        }
-        // Bloquear Cmd+U (Ver código fuente en Mac)
-        if (event.metaKey && event.key.toLowerCase() === 'u') {
+        if (event.key === 'F12' || (event.ctrlKey && event.shiftKey && ['I', 'J', 'C'].includes(event.key.toUpperCase())) || (event.metaKey && event.altKey && ['I', 'J', 'C'].includes(event.key.toUpperCase())) || (event.ctrlKey && event.key.toUpperCase() === 'U')) {
             event.preventDefault();
         }
     });
