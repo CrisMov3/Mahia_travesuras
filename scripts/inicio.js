@@ -6,28 +6,7 @@
   const SHIPPING_THRESHOLD = 170000;
   const SHIPPING_FEE = 8000;
   const WHATSAPP_NUMBER = '573172980319';
-
-  // ===============================
-  // SELECTORES DEL DOM
-  // ===============================
-  const cartIcon = document.querySelector('.cart-icon');
-  const cartPanel = document.getElementById('cart');
-  const cartCloseBtn = document.getElementById('cart-close');
-  const cartItemsContainer = document.querySelector('.cart-items');
-  const subtotalEl = document.getElementById('cart-subtotal');
-  const shippingEl = document.getElementById('cart-shipping');
-  const totalEl = document.getElementById('cart-total');
-  const checkoutBtn = document.getElementById('checkout-whatsapp');
-  const clearBtn = document.getElementById('clear-cart');
-  const modal = document.getElementById('checkout-modal');
-  const modalCloseBtn = document.getElementById('modal-close');
-  const modalCancelBtn = document.getElementById('modal-cancel');
-  const deliveryForm = document.getElementById('delivery-form');
-  const productButtons = document.querySelectorAll('.producto .btn-add-to-cart');
-  const shippingOptions = document.querySelectorAll('input[name="shippingMethod"]');
-  const hamburgerBtn = document.getElementById('hamburger-button');
-  const navMenu = document.querySelector('.main-nav');
-  const cartCounterEl = document.getElementById('cart-counter');
+  const WHOLESALE_THRESHOLD = 45;
 
   // ===============================
   // ESTADO DEL CARRITO
@@ -83,11 +62,12 @@
       }
   }
 
-
   // ===============================
   // LÓGICA DEL MENÚ HAMBURGUESA
   // ===============================
   function toggleNavMenu() {
+    const hamburgerBtn = document.getElementById('hamburger-button');
+    const navMenu = document.querySelector('.main-nav');
     hamburgerBtn.classList.toggle('open');
     navMenu.classList.toggle('open');
   }
@@ -96,6 +76,7 @@
   // LÓGICA DEL CARRITO
   // ===============================
   function updateCartCounter() {
+    const cartCounterEl = document.getElementById('cart-counter');
     if (!cartCounterEl) return;
     const totalItems = cartItems.reduce((sum, item) => sum + item.qty, 0);
     if (totalItems > 0) {
@@ -141,15 +122,31 @@
   }
 
   function updateTotalsUI() {
+    const subtotalEl = document.getElementById('cart-subtotal');
+    const shippingEl = document.getElementById('cart-shipping');
+    const totalEl = document.getElementById('cart-total');
+    const wholesaleNoticeEl = document.getElementById('wholesale-notice');
+
     const subtotal = calculateSubtotal();
     const shipping = calculateShipping(subtotal);
     const total = subtotal + shipping;
+
     if (subtotalEl) subtotalEl.textContent = formatCOP(subtotal);
     if (shippingEl) shippingEl.textContent = formatCOP(shipping);
     if (totalEl) totalEl.textContent = formatCOP(total);
+    
+    const totalItems = cartItems.reduce((sum, item) => sum + item.qty, 0);
+    if (wholesaleNoticeEl) {
+        if (totalItems > WHOLESALE_THRESHOLD) {
+            wholesaleNoticeEl.classList.add('show');
+        } else {
+            wholesaleNoticeEl.classList.remove('show');
+        }
+    }
   }
 
   function renderCart() {
+    const cartItemsContainer = document.querySelector('.cart-items');
     if (!cartItemsContainer) return;
     cartItemsContainer.innerHTML = cartItems.length === 0 ? '<p>Tu carrito está vacío.</p>' :
       cartItems.map(item => `
@@ -182,7 +179,7 @@
   }
 
   // ===============================
-  // LÓGICA DE BÚSQUEDA Y FILTRADO DEL CATÁLOGO
+  // LÓGICA DE BÚSQUEDA Y FILTRADO
   // ===============================
   function setupProductFiltering() {
       const searchBar = document.getElementById('search-bar');
@@ -231,23 +228,36 @@
   // GESTIÓN DE EVENTOS
   // ===============================
   function addCartItemListeners() {
-    document.querySelectorAll('.cart-item .item-qty').forEach(input => {
-        input.addEventListener('change', e => {
-            const name = e.target.closest('.cart-item').dataset.name;
-            changeItemQty(name, Number(e.target.value));
-        });
+    const cartItemsContainer = document.querySelector('.cart-items');
+    if (!cartItemsContainer) return;
+    
+    cartItemsContainer.addEventListener('change', (event) => {
+        if (event.target.classList.contains('item-qty')) {
+            const name = event.target.closest('.cart-item').dataset.name;
+            changeItemQty(name, Number(event.target.value));
+        }
     });
-    document.querySelectorAll('.cart-item .item-remove').forEach(button => {
-        button.addEventListener('click', e => {
-            const name = e.target.closest('.cart-item').dataset.name;
+
+    cartItemsContainer.addEventListener('click', (event) => {
+        if (event.target.classList.contains('item-remove')) {
+            const name = event.target.closest('.cart-item').dataset.name;
             removeItemFromCart(name);
-        });
+        }
     });
   }
 
-  function toggleCart() { cartPanel.classList.toggle('open'); }
-  function openModal() { if (modal) modal.style.display = 'flex'; }
-  function closeModal() { if (modal) modal.style.display = 'none'; }
+  function toggleCart() { 
+    const cartPanel = document.getElementById('cart');
+    cartPanel.classList.toggle('open'); 
+  }
+  function openModal() { 
+    const modal = document.getElementById('checkout-modal');
+    if (modal) modal.style.display = 'flex'; 
+  }
+  function closeModal() { 
+    const modal = document.getElementById('checkout-modal');
+    if (modal) modal.style.display = 'none'; 
+  }
 
   function handleCheckout() {
     if (cartItems.length === 0) {
@@ -265,8 +275,24 @@
         return;
     }
 
-    const method = getSelectedShippingMethod();
+    const totalItems = cartItems.reduce((sum, item) => sum + item.qty, 0);
 
+    if (totalItems > WHOLESALE_THRESHOLD) {
+        showCustomToast({
+            icon: '📦',
+            title: 'Cotización por WhatsApp',
+            subtitle: 'Al ser una compra por mayor, la cotización se hará directamente por WhatsApp.',
+            actionText: 'Continuar',
+            cancelText: 'Cancelar',
+            actionCallback: () => {
+                const message = buildWholesaleWhatsAppMessage();
+                window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`, '_blank');
+            }
+        });
+        return;
+    }
+
+    const method = getSelectedShippingMethod();
     if (method === 'delivery') {
         openModal();
     } else {
@@ -326,33 +352,72 @@
       return message.join('\n');
   }
 
-  if (hamburgerBtn) hamburgerBtn.addEventListener('click', toggleNavMenu);
-  if (cartIcon) cartIcon.addEventListener('click', toggleCart);
-  if (cartCloseBtn) cartCloseBtn.addEventListener('click', toggleCart);
-  if (clearBtn) clearBtn.addEventListener('click', clearCart);
-  if (checkoutBtn) checkoutBtn.addEventListener('click', handleCheckout);
+  function buildWholesaleWhatsAppMessage() {
+      const itemsText = cartItems.map(it => `- ${it.qty} x ${it.name}`).join('\n');
+      const message = [
+          '¡Hola Mahia Travesuras! Quiero realizar una cotización para estos pedidos al por mayor:\n',
+          itemsText
+      ].join('\n');
+      return message;
+  }
   
-  document.querySelectorAll('.producto .btn-add-to-cart').forEach(button => {
-    button.addEventListener('click', e => {
-        const productCard = e.target.closest('.producto');
-        const name = productCard.querySelector('h3').innerText;
-        const price = parsePrice(productCard.querySelector('.product-info .price').innerText);
-        addItemToCart({ name, price });
-    });
-  });
-
-  shippingOptions.forEach(radio => radio.addEventListener('change', updateTotalsUI));
-  if (modalCloseBtn) modalCloseBtn.addEventListener('click', closeModal);
-  if (modalCancelBtn) modalCancelBtn.addEventListener('click', closeModal);
-  if (deliveryForm) deliveryForm.addEventListener('submit', handleDeliveryFormSubmit);
-  window.addEventListener('click', (e) => { if (e.target === modal) closeModal(); });
-
   // ===============================
-  // INICIALIZACIÓN
+  // INICIALIZACIÓN Y EVENTOS PRINCIPALES
   // ===============================
   document.addEventListener('DOMContentLoaded', () => {
+    // Selectores que deben estar dentro de DOMContentLoaded
+    const cartIcon = document.querySelector('.cart-icon');
+    const cartCloseBtn = document.getElementById('cart-close');
+    const clearBtn = document.getElementById('clear-cart');
+    const checkoutBtn = document.getElementById('checkout-whatsapp');
+    const hamburgerBtn = document.getElementById('hamburger-button');
+    const modalCloseBtn = document.getElementById('modal-close');
+    const modalCancelBtn = document.getElementById('modal-cancel');
+    const deliveryForm = document.getElementById('delivery-form');
+    const cartSummaryEl = document.querySelector('.cart-summary');
+    
     renderCart();
     setupProductFiltering();
+
+    if (hamburgerBtn) hamburgerBtn.addEventListener('click', toggleNavMenu);
+    if (cartIcon) cartIcon.addEventListener('click', toggleCart);
+    if (cartCloseBtn) cartCloseBtn.addEventListener('click', toggleCart);
+    if (clearBtn) clearBtn.addEventListener('click', clearCart);
+    if (checkoutBtn) checkoutBtn.addEventListener('click', handleCheckout);
+    
+    // CORRECCIÓN #2: Usar delegación de eventos para los botones de añadir al carrito
+    document.body.addEventListener('click', (event) => {
+        if (event.target.classList.contains('btn-add-to-cart')) {
+            const productCard = event.target.closest('.producto');
+            const name = productCard.querySelector('h3').innerText;
+            
+            let priceElement = productCard.querySelector('.product-info .price') || productCard.querySelector('.price');
+            
+            if (priceElement) {
+                const price = parsePrice(priceElement.innerText);
+                addItemToCart({ name, price });
+            } else {
+                console.error("No se pudo encontrar el elemento del precio para el producto:", name);
+            }
+        }
+    });
+
+    // CORRECCIÓN #1: Usar delegación de eventos para los botones de envío
+    if (cartSummaryEl) {
+        cartSummaryEl.addEventListener('change', (event) => {
+            if (event.target.name === 'shippingMethod') {
+                updateTotalsUI();
+            }
+        });
+    }
+
+    if (modalCloseBtn) modalCloseBtn.addEventListener('click', closeModal);
+    if (modalCancelBtn) modalCancelBtn.addEventListener('click', closeModal);
+    if (deliveryForm) deliveryForm.addEventListener('submit', handleDeliveryFormSubmit);
+    window.addEventListener('click', (e) => { 
+        const modal = document.getElementById('checkout-modal');
+        if (e.target === modal) closeModal(); 
+    });
   });
 
 })();
