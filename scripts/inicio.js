@@ -48,7 +48,6 @@
       const cancelButtonHTML = cancelText ? `<button class="toast-cancel-btn">${cancelText}</button>` : '';
       const buttonsContainerHTML = (actionText || cancelText) ? `<div class="toast-buttons">${cancelButtonHTML}${actionButtonHTML}</div>` : '';
 
-
       toast.innerHTML = `
           <span class="toast-icon">${icon}</span>
           <div class="toast-body">
@@ -183,6 +182,52 @@
   }
 
   // ===============================
+  // LÓGICA DE BÚSQUEDA Y FILTRADO DEL CATÁLOGO
+  // ===============================
+  function setupProductFiltering() {
+      const searchBar = document.getElementById('search-bar');
+      const filterBtns = document.querySelectorAll('.filter-btn');
+      const allProducts = document.querySelectorAll('.product-grid .producto');
+
+      if (allProducts.length === 0) return;
+
+      let currentFilter = 'all';
+      let currentSearchTerm = '';
+
+      function applyFilters() {
+          allProducts.forEach(product => {
+              const category = product.dataset.category || '';
+              const name = product.querySelector('h3').innerText.toLowerCase();
+
+              const categoryMatch = currentFilter === 'all' || category.toLowerCase() === currentFilter;
+              const searchMatch = name.includes(currentSearchTerm);
+
+              if (categoryMatch && searchMatch) {
+                  product.classList.remove('product-hidden');
+              } else {
+                  product.classList.add('product-hidden');
+              }
+          });
+      }
+
+      if (searchBar) {
+          searchBar.addEventListener('input', () => {
+              currentSearchTerm = searchBar.value.toLowerCase().trim();
+              applyFilters();
+          });
+      }
+
+      filterBtns.forEach(btn => {
+          btn.addEventListener('click', () => {
+              filterBtns.forEach(b => b.classList.remove('active'));
+              btn.classList.add('active');
+              currentFilter = btn.dataset.filter;
+              applyFilters();
+          });
+      });
+  }
+
+  // ===============================
   // GESTIÓN DE EVENTOS
   // ===============================
   function addCartItemListeners() {
@@ -201,8 +246,6 @@
   }
 
   function toggleCart() { cartPanel.classList.toggle('open'); }
-  
-  // CORREGIDO: Usar flex para centrar el modal
   function openModal() { if (modal) modal.style.display = 'flex'; }
   function closeModal() { if (modal) modal.style.display = 'none'; }
 
@@ -214,8 +257,9 @@
             subtitle: 'Añade tus artículos favoritos y vuelve cuando estés lista.',
             actionText: 'Ver productos',
             actionCallback: () => {
-                const productsSection = document.getElementById('productos');
-                if (productsSection) productsSection.scrollIntoView({ behavior: 'smooth' });
+                if (!window.location.pathname.includes('catalogo.html')) {
+                    window.location.href = 'catalogo.html';
+                }
             }
         });
         return;
@@ -288,11 +332,11 @@
   if (clearBtn) clearBtn.addEventListener('click', clearCart);
   if (checkoutBtn) checkoutBtn.addEventListener('click', handleCheckout);
   
-  productButtons.forEach(button => {
+  document.querySelectorAll('.producto .btn-add-to-cart').forEach(button => {
     button.addEventListener('click', e => {
         const productCard = e.target.closest('.producto');
         const name = productCard.querySelector('h3').innerText;
-        const price = parsePrice(productCard.querySelector('p.price').innerText);
+        const price = parsePrice(productCard.querySelector('.product-info .price').innerText);
         addItemToCart({ name, price });
     });
   });
@@ -304,46 +348,11 @@
   window.addEventListener('click', (e) => { if (e.target === modal) closeModal(); });
 
   // ===============================
-  // FEED DE INSTAGRAM
-  // ===============================
-  async function fetchInstagramFeed() {
-    const instagramGrid = document.getElementById('instagram-grid');
-    if (!instagramGrid) return;
-    const accessToken = 'TU_TOKEN_DE_ACCESO_DE_INSTAGRAM_AQUI'; 
-    if (accessToken === 'TU_TOKEN_DE_ACCESO_DE_INSTAGRAM_AQUI') {
-        instagramGrid.innerHTML = '<p>Configura tu Token de Acceso de Instagram en el archivo script.js.</p>';
-        return;
-    }
-    const url = `https://graph.instagram.com/me/media?fields=id,caption,media_type,media_url,permalink,thumbnail_url&access_token=${accessToken}`;
-    try {
-        const response = await fetch(url);
-        if (!response.ok) throw new Error(`Error: ${response.statusText}`);
-        const data = await response.json();
-        if (data.data && data.data.length > 0) {
-            instagramGrid.innerHTML = '';
-            data.data.slice(0, 6).forEach(post => {
-                const postElement = document.createElement('a');
-                postElement.href = post.permalink;
-                postElement.target = '_blank';
-                postElement.rel = 'noopener noreferrer';
-                postElement.className = 'instagram-card';
-                const imageUrl = post.media_type === 'VIDEO' ? post.thumbnail_url : post.media_url;
-                postElement.innerHTML = `<img src="${imageUrl}" alt="${post.caption || 'Publicación de Instagram'}">`;
-                instagramGrid.appendChild(postElement);
-            });
-        }
-    } catch (error) {
-        console.error('Error al cargar feed de Instagram:', error);
-        instagramGrid.innerHTML = '<p>No se pudo cargar el feed de Instagram.</p>';
-    }
-  }
-
-  // ===============================
   // INICIALIZACIÓN
   // ===============================
   document.addEventListener('DOMContentLoaded', () => {
     renderCart();
-    fetchInstagramFeed();
+    setupProductFiltering();
   });
 
 })();
