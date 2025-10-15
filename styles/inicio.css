@@ -82,6 +82,11 @@ header {
     font-weight: 500;
 }
 
+.main-nav a.active {
+    color: var(--pink-strong);
+    font-weight: 700;
+}
+
 .header-icons {
     display: flex;
     align-items: center;
@@ -847,3 +852,4 @@ footer {
         right: 5px;
     }
 }
+
