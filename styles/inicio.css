@@ -488,7 +488,7 @@ footer {
 }
 .footer-social-icons { margin-bottom: 10px; }
 .footer-social-icons a {
-    color: #000000;
+    color: var(--primary-color);
     margin: 0 10px;
     font-size: 1.2rem;
 }
@@ -678,3 +678,4 @@ footer {
     }
     .toast-close-btn { top: 5px; right: 5px; }
 }
+
